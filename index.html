@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driver Onboarding Application - FAY warehouse</title>
+<style>
+:root{--p:#d9480f;--d:#1f2937;--b:#e5e7eb;--bg:#f8fafc}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--d)}
+header{background:#fff;color:var(--d);padding:24px 16px;text-align:center;border-bottom:1px solid var(--b)}
+header h1{margin:0;font-size:1.4rem}header p{margin:4px 0 0;color:#6b7280}
+header .accent{height:3px;width:64px;margin:12px auto 0;background:linear-gradient(90deg,#d9480f,#f59f00);border-radius:2px}
+.wrap{max-width:720px;margin:-16px auto 40px;background:#fff;border-radius:14px;box-shadow:0 8px 24px #0001;padding:20px}
+.prog{height:8px;background:var(--b);border-radius:9px;overflow:hidden}.bar{height:100%;background:var(--p);width:0;transition:.3s}
+.stepl{font-size:.85rem;color:#6b7280;margin:8px 0 16px}
+.step{display:none}.step.on{display:block}h2{font-size:1.15rem;margin:0 0 12px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+@media(max-width:560px){.g{grid-template-columns:1fr}}
+label{font-size:.85rem;font-weight:600;display:block;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--b);border-radius:8px;font-size:1rem}
+input:focus,select:focus{outline:2px solid #f59f0066;border-color:var(--p)}
+.err{border-color:#dc2626!important}.msg{color:#dc2626;font-size:.75rem;min-height:1em}
+.chk{display:flex;flex-wrap:wrap;gap:8px}.chk label{font-weight:400;border:1px solid var(--b);padding:6px 10px;border-radius:20px;display:flex;gap:6px;align-items:center}
+.chk input{width:auto}.cons label{font-weight:400;display:flex;gap:8px;align-items:flex-start;margin:8px 0}.cons input{width:auto;margin-top:3px}
+.nav{display:flex;justify-content:space-between;margin-top:20px}
+button{padding:12px 22px;border:0;border-radius:8px;font-size:1rem;cursor:pointer}
+.pri{background:var(--p);color:#fff}.sec{background:var(--b)}
+.done{text-align:center;padding:4px 0 12px}
+.done-top{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 0 8px}
+.done .ok{font-size:1.35rem;line-height:1;margin:0}
+.done-top h2{margin:0;font-size:1.05rem}
+.done-next{margin:0 0 6px;padding:6px 10px;background:#fff4e6;border:1px solid #fdba74;border-radius:8px;font-weight:700;font-size:.9rem;color:#9a3412;line-height:1.3}
+.done-steps{display:flex;flex-direction:column;gap:6px}
+.done-step{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;text-align:left;margin:0;max-width:none;padding:8px;border-radius:12px}
+.done-step .n{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;background:var(--p);line-height:1;margin-top:1px}
+.done-step h3{margin:0 0 2px;font-size:.92rem;line-height:1.25}
+.done-step .watext,.done-step .sxtext{margin:0 0 6px;font-size:.78rem;color:#374151;line-height:1.3}
+.wa{border:1px solid #bbf7d0;background:#f0fdf4}
+.sxapp{border:1px solid var(--b);background:#f8fafc}
+.wa-row{display:flex;align-items:center;gap:8px}
+.wa-row .wabtn{flex:1;min-width:0}
+.wabtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 12px;background:#25D366;color:#fff;font-weight:700;font-size:.92rem;text-decoration:none;border-radius:10px}
+.wabtn svg{width:20px;height:20px;flex-shrink:0;fill:currentColor}
+.waqrbox{flex:0 0 80px;margin:0;text-align:center}
+.waqr{display:block;width:80px;height:80px;margin:0 auto;background:#fff;border-radius:6px}
+.wacap{margin:2px 0 0;font-size:.65rem;color:#6b7280;line-height:1.2}
+.sxcodewrap{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 6px;flex-wrap:wrap}
+.sxcode{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:1.2rem;font-weight:700;letter-spacing:.12em;padding:6px 12px;border-radius:999px;background:#111827;color:#fff;line-height:1.2;user-select:all}
+.sxcopy{padding:7px 12px;font-size:.85rem;border:1px solid var(--b);background:#fff;color:var(--d);border-radius:8px;font-weight:600}
+.sxcopy.copied{background:#111827;color:#fff;border-color:#111827}
+.store-row{display:flex;gap:8px;width:100%}
+.sxstore,.gpstore{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:1;min-width:0;padding:11px 8px;background:#111;color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;border-radius:10px}
+.gpstore{background:#01875f}
+.sxstore svg,.gpstore svg{width:16px;height:18px;flex-shrink:0}
+.store-preferred{box-shadow:0 0 0 2px #f59f00}
+.done-foot{margin:10px 0 0;text-align:center}
+.done-foot>p{margin:0 0 6px;font-size:.78rem;color:#6b7280;line-height:1.35}
+.done-foot .note{font-size:.78rem;padding:8px 10px;text-align:left}
+.wrap:has(#done:not([hidden])){padding:8px 16px 12px}
+.wrap:has(#done:not([hidden])) .langsel{margin:0 0 6px;justify-content:center}
+.wrap:has(#done:not([hidden])) .langsel .langlbl{display:none}
+@media (max-height:720px){.done-step .sxtext{display:none}}
+.note{background:#fff4e6;border-left:4px solid var(--p);padding:10px 12px;border-radius:6px;font-size:.9rem}
+.up{border:2px dashed var(--b);border-radius:12px;padding:14px;text-align:center;background:#fafafa}
+.up.err{border-color:#dc2626}.up input{display:none}
+.up .pick{display:inline-block;margin-top:8px;padding:10px 16px;background:var(--p);color:#fff;border-radius:8px;font-weight:600;cursor:pointer}
+.up img{max-width:100%;max-height:180px;margin-top:10px;border-radius:8px;display:none}
+.up .hint{font-size:.8rem;color:#6b7280;margin:0}
+.radios{display:flex;gap:10px;flex-wrap:wrap}.radios label{font-weight:400;border:1px solid var(--b);padding:10px 14px;border-radius:10px;display:flex;gap:8px;align-items:center;cursor:pointer}
+.radios input{width:auto}
+.drow{display:grid;grid-template-columns:1.4fr .8fr .9fr;gap:8px}
+.drow select{width:100%;padding:10px;border:1px solid var(--b);border-radius:8px;font-size:1rem;background:#fff}
+
+
+.logos{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 12px;padding:0;background:transparent;width:fit-content;max-width:100%}
+.logos img.del{height:52px;width:auto;display:block}
+.logos img.sx{height:34px;width:auto;display:block}
+.logos .x{color:#9ca3af;font-size:1.35rem;font-weight:700;line-height:1}
+body:not(.es) [data-l="es"]{display:none}body:not(.zh) [data-l="zh"]{display:none}body.es [data-l="en"],body.zh [data-l="en"]{display:none}
+.langsel{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.langsel .langlbl{font-size:.8rem;color:#6b7280;margin-right:4px}
+.lbtn{padding:8px 14px;font-size:.9rem;border:1px solid var(--b);background:#fff;color:var(--d);border-radius:20px}
+.lbtn.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:600}
+.pol h3{font-size:1rem;margin:18px 0 6px;padding-top:12px;border-top:1px solid var(--b)}
+.pol ul{margin:0 0 8px;padding-left:20px}.pol li{margin:4px 0;line-height:1.45;font-size:.93rem}
+.pol p{line-height:1.45;font-size:.93rem;margin:6px 0}.pol .polsub{color:#6b7280;margin-top:-6px;font-weight:600}
+.pol .polreq{font-weight:700;margin:10px 0 0;font-size:.85rem}
+.pol .cons{background:#fff4e6;border-radius:8px;padding:2px 10px}.pol .cons label{font-size:.93rem;line-height:1.4;cursor:pointer}
+.pol .cons input{width:20px;height:20px;flex:0 0 20px}.pol .polfinal{border:2px solid var(--p);margin-top:12px}
+.pol .g{margin-top:12px}.pol input.ro{background:#f3f4f6;color:#374151}.pol h4{font-size:.95rem;margin:12px 0 6px;font-weight:700}.pol ol{margin:6px 0 4px;padding-left:22px}.pol ol li{margin:3px 0;line-height:1.45;font-size:.93rem}.pol a{color:#0b57d0;word-break:break-all}.pol .poleff{color:#6b7280;font-weight:600;margin:0 0 8px}.pol .polwa{margin:4px 0 10px;font-size:.93rem;line-height:1.45}
+</style></head><body>
+<header><div class="logos" aria-label="DEL and SpeedX partners">
+<img class="del" src="data:image/png;base64,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" alt="DEL">
+<span class="x" aria-hidden="true">×</span>
+<img class="sx" src="data:image/png;base64,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" alt="SpeedX">
+</div>
+<h1>Driver Onboarding Application - FAY warehouse</h1><div class="accent" aria-hidden="true"></div></header>
+<div class="wrap">
+<div class="langsel" role="group" aria-label="Language / Idioma / 语言"><span class="langlbl">Language / Idioma / 语言</span><button type="button" class="lbtn on" data-setlang="en" aria-pressed="true">English</button><button type="button" class="lbtn" data-setlang="es" aria-pressed="false">Español</button><button type="button" class="lbtn" data-setlang="zh" aria-pressed="false" lang="zh-CN">中文</button></div><div class="prog"><div class="bar" id="bar"></div></div><div class="stepl" id="stepl"></div>
+<form id="f" novalidate>
+<input type="hidden" name="lang" id="langField" value="EN">
+<div class="step" data-t="personal">
+<h2><span data-l="en">Personal Information</span><span data-l="es" lang="es">Información personal</span><span data-l="zh" lang="zh-CN">个人信息</span></h2><div class="g">
+<div class="full"><label><span data-l="en">Full Legal Name *</span><span data-l="es" lang="es">Nombre legal completo *</span><span data-l="zh" lang="zh-CN">法定全名 *</span></label><input name="fullName" required></div>
+<div><label><span data-l="en">Phone *</span><span data-l="es" lang="es">Teléfono *</span><span data-l="zh" lang="zh-CN">电话 *</span></label><input name="phone" type="tel" required pattern="[\d\s()+\-]{10,}"></div>
+<div><label><span data-l="en">Email *</span><span data-l="es" lang="es">Correo electrónico *</span><span data-l="zh" lang="zh-CN">电子邮箱 *</span></label><input name="email" type="email" required></div>
+<div><label><span data-l="en">Date of Birth *</span><span data-l="es" lang="es">Fecha de nacimiento *</span><span data-l="zh" lang="zh-CN">出生日期 *</span></label><div class="drow" data-date="dob" data-required></div><input type="hidden" name="dob" id="dob" required></div>
+<div><label><span data-l="en">SSN (last 4 only) *</span><span data-l="es" lang="es">SSN (solo los últimos 4) *</span><span data-l="zh" lang="zh-CN">社会安全号码（仅后 4 位）*</span></label><input name="ssnLast4" required pattern="\d{4}" maxlength="4" inputmode="numeric"></div>
+<div class="full"><label><span data-l="en">Street Address *</span><span data-l="es" lang="es">Dirección *</span><span data-l="zh" lang="zh-CN">街道地址 *</span></label><input name="street" required></div>
+<div><label><span data-l="en">City *</span><span data-l="es" lang="es">Ciudad *</span><span data-l="zh" lang="zh-CN">城市 *</span></label><input name="city" required></div>
+<div><label><span data-l="en">State *</span><span data-l="es" lang="es">Estado *</span><span data-l="zh" lang="zh-CN">州 *</span></label><input name="state" required value="NC" maxlength="2"></div>
+<div><label><span data-l="en">ZIP *</span><span data-l="es" lang="es">Código postal (ZIP) *</span><span data-l="zh" lang="zh-CN">邮政编码 *</span></label><input name="zip" required pattern="\d{5}(-\d{4})?"></div>
+</div></div>
+<div class="step" data-t="license"><h2><span data-l="en">Driver License</span><span data-l="es" lang="es">Licencia de conducir</span><span data-l="zh" lang="zh-CN">驾照</span></h2><div class="g">
+<div class="full"><label><span data-l="en">License Number *</span><span data-l="es" lang="es">Número de licencia *</span><span data-l="zh" lang="zh-CN">驾照号码 *</span></label><input name="dlNumber" required></div>
+<div><label><span data-l="en">Issuing State *</span><span data-l="es" lang="es">Estado emisor *</span><span data-l="zh" lang="zh-CN">签发州 *</span></label><input name="dlState" required maxlength="2" value="NC"></div>
+<div><label><span data-l="en">Expiration Date *</span><span data-l="es" lang="es">Fecha de vencimiento *</span><span data-l="zh" lang="zh-CN">到期日期 *</span></label><div class="drow" data-date="dlExp" data-required data-future></div><input type="hidden" name="dlExp" id="dlExp" required data-future></div>
+<div class="full"><label><span data-l="en">License Front Photo *</span><span data-l="es" lang="es">Foto del frente de la licencia *</span><span data-l="zh" lang="zh-CN">驾照正面照片 *</span></label>
+<div class="up" id="upFront"><p class="hint"><span data-l="en">Take a clear photo of the front, or choose from your gallery.</span><span data-l="es" lang="es">Tome una foto clara del frente o elíjala de su galería.</span><span data-l="zh" lang="zh-CN">请拍一张清晰的驾照正面照片，或从相册中选择。</span></p>
+<label class="pick"><input type="file" id="dlFront" accept="image/*" capture="environment"><span data-l="en">Upload front</span><span data-l="es" lang="es">Subir frente</span><span data-l="zh" lang="zh-CN">上传正面</span></label>
+<img id="prevFront" alt="Front preview" data-alt-es="Vista previa del frente" data-alt-zh="正面预览"></div></div>
+<div class="full"><label><span data-l="en">License Back Photo *</span><span data-l="es" lang="es">Foto del reverso de la licencia *</span><span data-l="zh" lang="zh-CN">驾照背面照片 *</span></label>
+<div class="up" id="upBack"><p class="hint"><span data-l="en">Take a clear photo of the back, or choose from your gallery.</span><span data-l="es" lang="es">Tome una foto clara del reverso o elíjala de su galería.</span><span data-l="zh" lang="zh-CN">请拍一张清晰的驾照背面照片，或从相册中选择。</span></p>
+<label class="pick"><input type="file" id="dlBack" accept="image/*" capture="environment"><span data-l="en">Upload back</span><span data-l="es" lang="es">Subir reverso</span><span data-l="zh" lang="zh-CN">上传背面</span></label>
+<img id="prevBack" alt="Back preview" data-alt-es="Vista previa del reverso" data-alt-zh="背面预览"></div></div>
+</div></div>
+<div class="step" data-t="vehicle"><h2><span data-l="en">Vehicle &amp; Insurance</span><span data-l="es" lang="es">Vehículo y seguro</span><span data-l="zh" lang="zh-CN">车辆与保险</span></h2><div class="g">
+<div class="full"><label><span data-l="en">License Plate *</span><span data-l="es" lang="es">Número de placa *</span><span data-l="zh" lang="zh-CN">车牌号 *</span></label><input name="vehPlate" required></div>
+<div class="full"><label><span data-l="en">Do you have valid auto insurance? *</span><span data-l="es" lang="es">¿Tiene un seguro de auto vigente? *</span><span data-l="zh" lang="zh-CN">您是否有有效的汽车保险？*</span></label>
+<div class="radios" data-group="hasValidInsurance">
+<label><input type="radio" name="hasValidInsurance" value="Yes" required><span data-l="en">Yes</span><span data-l="es" lang="es">Sí</span><span data-l="zh" lang="zh-CN">是</span></label>
+<label><input type="radio" name="hasValidInsurance" value="No"><span data-l="en">No</span><span data-l="es" lang="es">No</span><span data-l="zh" lang="zh-CN">否</span></label>
+</div><div class="msg"></div></div>
+</div></div>
+<div class="step" data-t="emergency"><h2><span data-l="en">Emergency Contact</span><span data-l="es" lang="es">Contacto de emergencia</span><span data-l="zh" lang="zh-CN">紧急联系人</span></h2><div class="g">
+<div class="full"><label><span data-l="en">Name *</span><span data-l="es" lang="es">Nombre *</span><span data-l="zh" lang="zh-CN">姓名 *</span></label><input name="ecName" required></div>
+<div><label><span data-l="en">Relationship *</span><span data-l="es" lang="es">Parentesco *</span><span data-l="zh" lang="zh-CN">关系 *</span></label><input name="ecRelation" required></div>
+<div><label><span data-l="en">Phone *</span><span data-l="es" lang="es">Teléfono *</span><span data-l="zh" lang="zh-CN">电话 *</span></label><input name="ecPhone" type="tel" required pattern="[\d\s()+\-]{10,}"></div>
+</div></div>
+<div class="step" data-t="consent"><h2><span data-l="en">Consent &amp; Signature</span><span data-l="es" lang="es">Consentimiento y firma</span><span data-l="zh" lang="zh-CN">同意与签名</span></h2><p class="note"><span data-l="en">Once approved, you&#x27;ll receive an email invite from QuickBooks to complete your W-9 and set up direct deposit.</span><span data-l="es" lang="es">Una vez aprobado, recibirá una invitación por correo electrónico de QuickBooks para completar su formulario W-9 y configurar el depósito directo.</span><span data-l="zh" lang="zh-CN">审核通过后，您会收到 QuickBooks 发出的邮件邀请，用于填写 W-9 表格并设置直接存款。</span></p><div class="cons">
+<label><input type="checkbox" name="consentBackground" value="Yes" required><span><span data-l="en">I authorize Desert Express Logistics Inc to conduct a background check and motor vehicle record (MVR) review.</span><span data-l="es" lang="es">Autorizo a Desert Express Logistics Inc a realizar una verificación de antecedentes y una revisión de mi historial de manejo (MVR).</span><span data-l="zh" lang="zh-CN">我授权 Desert Express Logistics Inc 对我进行背景调查和机动车驾驶记录（MVR）审查。</span></span></label>
+<label><input type="checkbox" name="consentTerms" value="Yes" required><span><span data-l="en">I certify the information provided is accurate and agree to the terms and conditions.</span><span data-l="es" lang="es">Certifico que la información proporcionada es correcta y acepto los términos y condiciones.</span><span data-l="zh" lang="zh-CN">我保证所提供的信息真实准确，并同意相关条款和条件。</span></span></label></div>
+<div class="g"><div class="full"><label><span data-l="en">Signature (type full name) *</span><span data-l="es" lang="es">Firma (escriba su nombre completo) *</span><span data-l="zh" lang="zh-CN">签名（请输入全名）*</span></label><input name="signature" required></div></div>
+<input type="hidden" name="signDate" id="signDate">
+<p class="hint" id="signDateHint" style="font-size:.8rem;color:#6b7280;margin:8px 0 0"></p>
+</div>
+<div class="step pol" data-t="policy"><h2><span data-l="en">DEL Driver Operating Policy &amp; Acknowledgment</span><span data-l="es" lang="es">Política Operativa y Reconocimiento para Conductores de DEL</span><span data-l="zh" lang="zh-CN">DEL 司机运营政策与确认书</span></h2>
+<p class="poleff"><span data-l="en">Effective Upon Acknowledgment</span><span data-l="es" lang="es">Vigente a partir del reconocimiento</span><span data-l="zh" lang="zh-CN">自确认起生效</span></p>
+<p><span data-l="en">All drivers must read and agree to the following policies before performing deliveries with DEL.</span><span data-l="es" lang="es">Todos los conductores deben leer y aceptar las siguientes políticas antes de realizar entregas con DEL.</span><span data-l="zh" lang="zh-CN">所有司机在为 DEL 进行派送前，必须阅读并同意以下政策。</span></p>
+<h3><span data-l="en">SECTION 1 — SCHEDULING &amp; WHATSAPP COMMUNICATION</span><span data-l="es" lang="es">SECCIÓN 1 — PROGRAMACIÓN Y COMUNICACIÓN POR WHATSAPP</span><span data-l="zh" lang="zh-CN">第 1 部分 — 排班与 WhatsApp 沟通</span></h3>
+<ul>
+<li><span data-l="en">DEL will send the weekly schedule form for the following week via text message (SMS) around Wednesday.</span><span data-l="es" lang="es">DEL enviará el formulario de horario semanal para la semana siguiente por mensaje de texto (SMS) alrededor del miércoles.</span><span data-l="zh" lang="zh-CN">DEL 将在每周三左右，通过手机短信（SMS）发送下一周的排班表。</span></li>
+<li><span data-l="en">Drivers must complete and submit their weekly availability schedule no later than Saturday at 11:59 PM.</span><span data-l="es" lang="es">Los conductores deben completar y enviar su disponibilidad semanal a más tardar el sábado a las 11:59 PM.</span><span data-l="zh" lang="zh-CN">司机必须在周六晚上 11:59 PM 之前填写并提交每周可出勤时间表。</span></li>
+<li><span data-l="en">If you cannot work as scheduled, will be late, or need time off, notify management promptly through SpeedX-FAY WhatsApp.</span><span data-l="es" lang="es">Si no puede trabajar según lo programado, llegará tarde o necesita tiempo libre, notifique de inmediato a la gerencia a través de SpeedX-FAY WhatsApp.</span><span data-l="zh" lang="zh-CN">如无法按排班出勤、将会迟到或需要请假，请通过 SpeedX-FAY WhatsApp 及时通知管理人员。</span></li>
+<li><span data-l="en">If an emergency prevents you from completing deliveries on time, immediately report the reason, remaining package count, and expected completion time.</span><span data-l="es" lang="es">Si una emergencia le impide completar las entregas a tiempo, informe de inmediato el motivo, la cantidad de paquetes restantes y la hora estimada de finalización.</span><span data-l="zh" lang="zh-CN">如因紧急情况无法按时完成派送，请立即报告原因、剩余包裹数量和预计完成时间。</span></li>
+<li><span data-l="en">Supporting evidence may be required, including a medical note, vehicle repair photos, or other reasonable emergency documentation.</span><span data-l="es" lang="es">Es posible que se requieran pruebas de respaldo, como una nota médica, fotos de reparación del vehículo u otra documentación razonable de la emergencia.</span><span data-l="zh" lang="zh-CN">可能需要提供证明材料，包括医生证明、车辆维修照片或其他合理的紧急情况证明文件。</span></li>
+<li><span data-l="en">Reporting an issue does not automatically extend delivery deadlines. Follow management&#x27;s instructions regarding remaining packages.</span><span data-l="es" lang="es">Reportar un problema no extiende automáticamente los plazos de entrega. Siga las instrucciones de la gerencia con respecto a los paquetes restantes.</span><span data-l="zh" lang="zh-CN">报告问题并不会自动延长派送截止时间。请按照管理人员关于剩余包裹的指示执行。</span></li>
+</ul>
+<p class="polwa"><span data-l="en">SpeedX-FAY WhatsApp:</span><span data-l="es" lang="es">SpeedX-FAY WhatsApp:</span><span data-l="zh" lang="zh-CN">SpeedX-FAY WhatsApp:</span><br><a href="https://wa.me/message/7KPTJU42FVB7G1" target="_blank" rel="noopener noreferrer">https://wa.me/message/7KPTJU42FVB7G1</a></p>
+<div class="cons"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read and understand these requirements.</span><span data-l="es" lang="es">He leído y entiendo estos requisitos.</span><span data-l="zh" lang="zh-CN">我已阅读并理解以上要求。</span></span></label></div>
+<h3><span data-l="en">SECTION 2 — PACKAGE PICKUP, DELIVERY &amp; RETURNS</span><span data-l="es" lang="es">SECCIÓN 2 — RECOGIDA, ENTREGA Y DEVOLUCIÓN DE PAQUETES</span><span data-l="zh" lang="zh-CN">第 2 部分 — 取件、派送与退件</span></h3>
+<ul>
+<li><span data-l="en">Verify all assigned packages and sign the warehouse pickup sheet before leaving.</span><span data-l="es" lang="es">Verifique todos los paquetes asignados y firme la hoja de recogida del almacén antes de salir.</span><span data-l="zh" lang="zh-CN">离开仓库前，请核对所有分配给您的包裹并在仓库取件单上签字。</span></li>
+<li><span data-l="en">If the packages received do not match the app records, clearly note the missing packages and corresponding route number on the pickup sheet before departure. Notify warehouse management immediately.</span><span data-l="es" lang="es">Si los paquetes recibidos no coinciden con los registros de la aplicación, anote claramente en la hoja de recogida los paquetes faltantes y el número de ruta correspondiente antes de salir. Notifique de inmediato a la gerencia del almacén.</span><span data-l="zh" lang="zh-CN">如收到的包裹与应用程序记录不符，请在离仓前在取件单上清楚注明缺失包裹及对应路线编号，并立即通知仓库管理人员。</span></li>
+<li><span data-l="en">Drivers are responsible for packages they receive and sign for. Any missing or lost packages must be reported immediately.</span><span data-l="es" lang="es">Los conductores son responsables de los paquetes que reciben y firman. Cualquier paquete faltante o perdido debe informarse de inmediato.</span><span data-l="zh" lang="zh-CN">司机须对自己接收并签字确认的包裹负责。任何缺失或丢失的包裹必须立即报告。</span></li>
+<li><span data-l="en">Complete all deliveries within 24 hours of pickup, unless an exception is approved.</span><span data-l="es" lang="es">Complete todas las entregas dentro de las 24 horas posteriores a la recogida, salvo que se apruebe una excepción.</span><span data-l="zh" lang="zh-CN">除非已获批准例外，所有派送须在取件后 24 小时内完成。</span></li>
+<li><span data-l="en">No throwing, tossing, or roughly handling packages. All deliveries must be performed carefully and professionally.</span><span data-l="es" lang="es">Está prohibido lanzar, tirar o manipular los paquetes de forma brusca. Todas las entregas deben realizarse con cuidado y de manera profesional.</span><span data-l="zh" lang="zh-CN">严禁抛掷、扔摔或粗暴搬运包裹。所有派送必须小心、专业地完成。</span></li>
+<li><span data-l="en">Deliveries to USPS mailboxes are strictly prohibited.</span><span data-l="es" lang="es">Las entregas en buzones de USPS están estrictamente prohibidas.</span><span data-l="zh" lang="zh-CN">严禁将包裹投入 USPS 邮箱。</span></li>
+<li><span data-l="en">Every delivery must follow the company&#x27;s 3-Photo POD Standard:</span><span data-l="es" lang="es">Cada entrega debe cumplir el Estándar de POD de 3 fotos de la empresa:</span><span data-l="zh" lang="zh-CN">每次派送必须遵循公司的 3 张照片 POD 标准：</span>
+<ol>
+<li><span data-l="en">Shipping Label: A clear photo of the package label.</span><span data-l="es" lang="es">Etiqueta de envío: una foto clara de la etiqueta del paquete.</span><span data-l="zh" lang="zh-CN">运单标签：清晰拍摄包裹标签的照片。</span></li>
+<li><span data-l="en">Address: A clear photo showing the house number or delivery address.</span><span data-l="es" lang="es">Dirección: una foto clara que muestre el número de casa o la dirección de entrega.</span><span data-l="zh" lang="zh-CN">地址：清晰拍摄门牌号或派送地址的照片。</span></li>
+<li><span data-l="en">Delivery Location: A clear photo showing exactly where the package was placed.</span><span data-l="es" lang="es">Lugar de entrega: una foto clara que muestre exactamente dónde se colocó el paquete.</span><span data-l="zh" lang="zh-CN">放置位置：清晰拍摄包裹具体放置位置的照片。</span></li>
+</ol>
+</li>
+<li><span data-l="en">Fake POD, incorrect delivery confirmations, and unclear or noncompliant photos are prohibited.</span><span data-l="es" lang="es">Están prohibidas las POD falsas, las confirmaciones de entrega incorrectas y las fotos poco claras o que no cumplan los requisitos.</span><span data-l="zh" lang="zh-CN">严禁伪造 POD、错误确认送达，以及不清晰或不符合要求的照片。</span></li>
+<li><span data-l="en">Return all undelivered packages to the warehouse within 24 hours of pickup, following proper return procedures, unless otherwise instructed.</span><span data-l="es" lang="es">Devuelva todos los paquetes no entregados al almacén dentro de las 24 horas posteriores a la recogida, siguiendo los procedimientos de devolución correspondientes, salvo que se indique lo contrario.</span><span data-l="zh" lang="zh-CN">除非另有指示，所有未送达的包裹须在取件后 24 小时内按规定的退件流程退回仓库。</span></li>
+</ul>
+<div class="cons"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read and understand these requirements.</span><span data-l="es" lang="es">He leído y entiendo estos requisitos.</span><span data-l="zh" lang="zh-CN">我已阅读并理解以上要求。</span></span></label></div>
+<h3><span data-l="en">SECTION 3 — WAREHOUSE RULES &amp; DRIVER CONDUCT</span><span data-l="es" lang="es">SECCIÓN 3 — REGLAS DEL ALMACÉN Y CONDUCTA DEL CONDUCTOR</span><span data-l="zh" lang="zh-CN">第 3 部分 — 仓库规定与司机行为规范</span></h3>
+<ul>
+<li><span data-l="en">Follow warehouse safety rules, pickup procedures, and designated parking instructions.</span><span data-l="es" lang="es">Cumpla las normas de seguridad del almacén, los procedimientos de recogida y las indicaciones de estacionamiento designado.</span><span data-l="zh" lang="zh-CN">遵守仓库安全规定、取件流程和指定停车指示。</span></li>
+<li><span data-l="en">No smoking, littering, blocking entrances, or handling other drivers&#x27; packages without authorization.</span><span data-l="es" lang="es">Está prohibido fumar, tirar basura, bloquear las entradas o manipular los paquetes de otros conductores sin autorización.</span><span data-l="zh" lang="zh-CN">禁止吸烟、乱扔垃圾、堵塞出入口，以及未经授权动用其他司机的包裹。</span></li>
+<li><span data-l="en">Weapons, firearms, and other dangerous items are strictly prohibited inside the warehouse and while performing delivery services.</span><span data-l="es" lang="es">Las armas, las armas de fuego y otros artículos peligrosos están estrictamente prohibidos dentro del almacén y mientras se realizan los servicios de entrega.</span><span data-l="zh" lang="zh-CN">严禁在仓库内以及执行派送服务期间携带武器、枪支或其他危险物品。</span></li>
+<li><span data-l="en">Respect warehouse staff, other drivers, customers, and private property.</span><span data-l="es" lang="es">Respete al personal del almacén, a los demás conductores, a los clientes y a la propiedad privada.</span><span data-l="zh" lang="zh-CN">尊重仓库工作人员、其他司机、客户和私人财产。</span></li>
+<li><span data-l="en">Do not share driver accounts or allow unauthorized individuals to perform deliveries.</span><span data-l="es" lang="es">No comparta cuentas de conductor ni permita que personas no autorizadas realicen entregas.</span><span data-l="zh" lang="zh-CN">不得共用司机账号，也不得允许未经授权的人员进行派送。</span></li>
+<li><span data-l="en">Once a route is accepted, drivers are expected to complete it or promptly report a legitimate reason they cannot.</span><span data-l="es" lang="es">Una vez aceptada una ruta, se espera que los conductores la completen o informen de inmediato un motivo legítimo por el cual no pueden hacerlo.</span><span data-l="zh" lang="zh-CN">一旦接受路线，司机应完成该路线，或及时报告无法完成的正当理由。</span></li>
+<li><span data-l="en">Attendance, delivery performance, POD quality, return rates, and reliability may affect future dispatch priority.</span><span data-l="es" lang="es">La asistencia, el desempeño en las entregas, la calidad del POD, las tasas de devolución y la confiabilidad pueden afectar la prioridad de despacho futura.</span><span data-l="zh" lang="zh-CN">出勤情况、派送表现、POD 质量、退件率以及可靠程度，可能会影响今后的派单优先级。</span></li>
+</ul>
+<div class="cons"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read and understand these requirements.</span><span data-l="es" lang="es">He leído y entiendo estos requisitos.</span><span data-l="zh" lang="zh-CN">我已阅读并理解以上要求。</span></span></label></div>
+<h3><span data-l="en">SECTION 4 — PAYMENT, PENALTIES &amp; PACKAGE LIABILITY</span><span data-l="es" lang="es">SECCIÓN 4 — PAGOS, PENALIDADES Y RESPONSABILIDAD POR PAQUETES</span><span data-l="zh" lang="zh-CN">第 4 部分 — 付款、处罚与包裹责任</span></h3>
+<h4><span data-l="en">Payment Schedule — NET 7</span><span data-l="es" lang="es">Calendario de pagos — NET 7</span><span data-l="zh" lang="zh-CN">付款周期 — NET 7</span></h4>
+<ul>
+<li><span data-l="en">The weekly billing period runs from Saturday through Friday.</span><span data-l="es" lang="es">El período de facturación semanal va de sábado a viernes.</span><span data-l="zh" lang="zh-CN">每周结算周期为周六至周五。</span></li>
+<li><span data-l="en">DEL Finance will initiate payment on the following Friday after the billing period closes.</span><span data-l="es" lang="es">Finanzas de DEL iniciará el pago el viernes siguiente al cierre del período de facturación.</span><span data-l="zh" lang="zh-CN">DEL 财务将在结算周期结束后的下一个周五启动付款。</span></li>
+<li><span data-l="en">Payments are generally expected to arrive between Monday and Wednesday of the following week, depending on bank processing times.</span><span data-l="es" lang="es">En general, se espera que los pagos lleguen entre el lunes y el miércoles de la semana siguiente, según los plazos de procesamiento del banco.</span><span data-l="zh" lang="zh-CN">款项通常会在下一周的周一至周三到账，具体取决于银行处理时间。</span></li>
+<li><span data-l="en">All drivers must complete the QuickBooks Direct Deposit setup link provided by the company with accurate banking information.</span><span data-l="es" lang="es">Todos los conductores deben completar el enlace de configuración de QuickBooks Direct Deposit proporcionado por la empresa, con información bancaria precisa.</span><span data-l="zh" lang="zh-CN">所有司机必须通过公司提供的 QuickBooks Direct Deposit 设置链接，填写准确的银行信息。</span></li>
+<li><span data-l="en">First payment: QuickBooks may apply a hold of approximately 3 business days.</span><span data-l="es" lang="es">Primer pago: QuickBooks puede aplicar una retención de aproximadamente 3 días hábiles.</span><span data-l="zh" lang="zh-CN">首次付款：QuickBooks 可能会有大约 3 个工作日的冻结期。</span></li>
+<li><span data-l="en">Future payments: Deposits generally arrive by the second business day after payment is initiated, subject to bank processing.</span><span data-l="es" lang="es">Pagos posteriores: Los depósitos generalmente llegan el segundo día hábil después de que se inicia el pago, sujeto al procesamiento del banco.</span><span data-l="zh" lang="zh-CN">后续付款：款项通常在付款启动后的第二个工作日到账，具体取决于银行处理进度。</span></li>
+</ul>
+<h4><span data-l="en">Penalties &amp; Package Liability</span><span data-l="es" lang="es">Penalidades y responsabilidad por paquetes</span><span data-l="zh" lang="zh-CN">处罚与包裹责任</span></h4>
+<ul>
+<li><span data-l="en">Invalid POD: Verified violations may result in a $2 charge per package.</span><span data-l="es" lang="es">POD no válido: Las infracciones verificadas pueden resultar en un cargo de $2 por paquete.</span><span data-l="zh" lang="zh-CN">无效 POD：经核实的违规行为可能导致每个包裹被收取 $2 费用。</span></li>
+<li><span data-l="en">Lost Packages: Drivers may be responsible for up to $65 per package when the loss and driver responsibility are verified.</span><span data-l="es" lang="es">Paquetes perdidos: Los conductores pueden ser responsables de hasta $65 por paquete cuando se verifiquen la pérdida y la responsabilidad del conductor.</span><span data-l="zh" lang="zh-CN">丢失包裹：在核实包裹丢失且责任在司机一方后，司机可能需承担每个包裹最高 $65 的责任。</span></li>
+<li><span data-l="en">Drivers must immediately report missing or lost packages. DEL will contact the merchant to verify the loss, liability, and applicable charge before assessing any penalty.</span><span data-l="es" lang="es">Los conductores deben informar de inmediato los paquetes faltantes o perdidos. DEL se comunicará con el comerciante para verificar la pérdida, la responsabilidad y el cargo aplicable antes de imponer cualquier penalidad.</span><span data-l="zh" lang="zh-CN">司机必须立即报告缺失或丢失的包裹。DEL 将联系商家核实损失、责任和适用费用后，才会评估任何处罚。</span></li>
+<li><span data-l="en">A return rate above 5% may trigger a performance review. Documented delivery exceptions will be considered.</span><span data-l="es" lang="es">Una tasa de devolución superior al 5% puede dar lugar a una revisión de desempeño. Se tomarán en cuenta las excepciones de entrega documentadas.</span><span data-l="zh" lang="zh-CN">退件率超过 5% 可能会启动绩效审查。已记录的派送例外情况将被纳入考虑。</span></li>
+<li><span data-l="en">All charges, adjustments, and liabilities are subject to applicable agreements and laws.</span><span data-l="es" lang="es">Todos los cargos, ajustes y responsabilidades están sujetos a los acuerdos y leyes aplicables.</span><span data-l="zh" lang="zh-CN">所有费用、调整和责任均须遵守适用的协议和法律。</span></li>
+</ul>
+<h4><span data-l="en">Previous DSP Balances</span><span data-l="es" lang="es">Saldos con DSP anteriores</span><span data-l="zh" lang="zh-CN">以往 DSP 的欠款</span></h4>
+<ul>
+<li><span data-l="en">DEL is not responsible for unpaid earnings, penalties, debts, or disputes from a driver&#x27;s previous work with SpeedX or other DSPs, unless required by law or expressly agreed in writing.</span><span data-l="es" lang="es">DEL no es responsable de ganancias no pagadas, penalidades, deudas ni disputas derivadas del trabajo anterior de un conductor con SpeedX u otros DSP, a menos que lo exija la ley o se acuerde expresamente por escrito.</span><span data-l="zh" lang="zh-CN">对于司机以往为 SpeedX 或其他 DSP 工作时产生的未付收入、处罚、债务或纠纷，DEL 概不负责，除非法律另有规定或另有明确的书面约定。</span></li>
+<li><span data-l="en">Previous payment disputes must be resolved directly with the responsible DSP.</span><span data-l="es" lang="es">Las disputas de pago anteriores deben resolverse directamente con el DSP responsable.</span><span data-l="zh" lang="zh-CN">以往的付款纠纷必须直接与相关责任 DSP 解决。</span></li>
+</ul>
+<div class="cons"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read and understand these requirements.</span><span data-l="es" lang="es">He leído y entiendo estos requisitos.</span><span data-l="zh" lang="zh-CN">我已阅读并理解以上要求。</span></span></label></div>
+<h3><span data-l="en">SECTION 5 — DRIVER RESPONSIBILITIES &amp; ACCIDENT LIABILITY</span><span data-l="es" lang="es">SECCIÓN 5 — RESPONSABILIDADES DEL CONDUCTOR Y RESPONSABILIDAD POR ACCIDENTES</span><span data-l="zh" lang="zh-CN">第 5 部分 — 司机职责与事故责任</span></h3>
+<ul>
+<li><span data-l="en">Maintain a valid driver&#x27;s license, vehicle registration, and insurance appropriate for delivery services.</span><span data-l="es" lang="es">Mantenga vigentes su licencia de conducir, el registro del vehículo y un seguro adecuado para los servicios de entrega.</span><span data-l="zh" lang="zh-CN">须持有有效的驾照、车辆登记以及适合派送服务的保险。</span></li>
+<li><span data-l="en">Drivers are responsible for their own vehicles, fuel, maintenance, and related operating expenses.</span><span data-l="es" lang="es">Los conductores son responsables de sus propios vehículos, combustible, mantenimiento y gastos operativos relacionados.</span><span data-l="zh" lang="zh-CN">司机须自行承担车辆、燃油、保养及相关运营费用。</span></li>
+<li><span data-l="en">Keep personal, contact, and banking information accurate and updated.</span><span data-l="es" lang="es">Mantenga precisa y actualizada su información personal, de contacto y bancaria.</span><span data-l="zh" lang="zh-CN">请保持个人、联系及银行信息准确并及时更新。</span></li>
+<li><span data-l="en">Traffic Accidents: Drivers operating as independent contractors must maintain their own applicable vehicle insurance and promptly report any accident to DEL and their insurance provider. Drivers are responsible for claims and liabilities attributable to their own actions, subject to applicable law and insurance coverage. DEL does not automatically assume responsibility for a driver&#x27;s personal accident liabilities.</span><span data-l="es" lang="es">Accidentes de tránsito: Los conductores que operan como contratistas independientes deben mantener su propio seguro de vehículo aplicable e informar de inmediato cualquier accidente a DEL y a su aseguradora. Los conductores son responsables de las reclamaciones y obligaciones atribuibles a sus propias acciones, sujeto a la ley aplicable y a la cobertura del seguro. DEL no asume automáticamente la responsabilidad por las obligaciones personales de un conductor en caso de accidente.</span><span data-l="zh" lang="zh-CN">交通事故：以独立承包商身份作业的司机必须自行投保适用的车辆保险，并及时向 DEL 及其保险公司报告任何事故。对于因其自身行为产生的索赔和责任，司机须自行承担，具体以适用法律和保险保障范围为准。DEL 不会自动承担司机的个人事故责任。</span></li>
+<li><span data-l="en">Report customer complaints, property damage, and delivery issues promptly.</span><span data-l="es" lang="es">Informe de inmediato las quejas de clientes, los daños a la propiedad y los problemas de entrega.</span><span data-l="zh" lang="zh-CN">如有客户投诉、财产损坏或派送问题，请及时报告。</span></li>
+<li><span data-l="en">Serious or repeated policy violations may result in reduced dispatch priority, suspension, or removal from future delivery assignments.</span><span data-l="es" lang="es">Las infracciones graves o reiteradas de las políticas pueden resultar en una menor prioridad de despacho, suspensión o exclusión de futuras asignaciones de entrega.</span><span data-l="zh" lang="zh-CN">严重或反复违反政策，可能导致派单优先级降低、暂停接单，或被取消今后的派送任务。</span></li>
+</ul>
+<div class="cons"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read and understand these requirements.</span><span data-l="es" lang="es">He leído y entiendo estos requisitos.</span><span data-l="zh" lang="zh-CN">我已阅读并理解以上要求。</span></span></label></div>
+<h3><span data-l="en">FINAL ACKNOWLEDGMENT</span><span data-l="es" lang="es">RECONOCIMIENTO FINAL</span><span data-l="zh" lang="zh-CN">最终确认</span></h3>
+<p><span data-l="en">I confirm that I have read, understand, and agree to follow the DEL Driver Operating Policy.</span><span data-l="es" lang="es">Confirmo que he leído, entiendo y acepto cumplir la Política Operativa para Conductores de DEL.</span><span data-l="zh" lang="zh-CN">我确认已阅读、理解并同意遵守《DEL 司机运营政策》。</span></p>
+<p><span data-l="en">I acknowledge my responsibilities regarding package pickup, delivery, returns, POD requirements, WhatsApp communication, payment procedures, warehouse safety, and applicable financial liabilities.</span><span data-l="es" lang="es">Reconozco mis responsabilidades en cuanto a la recogida, entrega y devolución de paquetes, los requisitos de POD, la comunicación por WhatsApp, los procedimientos de pago, la seguridad del almacén y las responsabilidades financieras aplicables.</span><span data-l="zh" lang="zh-CN">我确认知晓并承担在取件、派送、退件、POD 要求、WhatsApp 沟通、付款流程、仓库安全以及适用财务责任方面的职责。</span></p>
+<p><span data-l="en">I understand that violations may affect my eligibility for future delivery assignments and may result in financial responsibility as permitted by applicable agreements and law.</span><span data-l="es" lang="es">Entiendo que las infracciones pueden afectar mi elegibilidad para futuras asignaciones de entrega y pueden dar lugar a responsabilidad financiera, según lo permitido por los acuerdos aplicables y la ley.</span><span data-l="zh" lang="zh-CN">我理解，如有违反，可能影响我今后承接派送任务的资格，并可能在适用协议和法律允许的范围内承担财务责任。</span></p>
+<div class="g"><div class="full"><label for="policyName"><span data-l="en">Driver Full Name *</span><span data-l="es" lang="es">Nombre completo del conductor *</span><span data-l="zh" lang="zh-CN">司机全名 *</span></label><input name="policyName" id="policyName" required autocomplete="name"></div><div class="full"><label for="policyDate"><span data-l="en">Date</span><span data-l="es" lang="es">Fecha</span><span data-l="zh" lang="zh-CN">日期</span></label><input id="policyDate" readonly tabindex="-1" class="ro"></div></div>
+<div class="cons polfinal"><label><input type="checkbox" class="polchk" required><span><span data-l="en">I have read, understood, and agree to all five sections above.</span><span data-l="es" lang="es">He leído, entendido y acepto las cinco secciones anteriores.</span><span data-l="zh" lang="zh-CN">我已阅读、理解并同意以上全部五个部分。</span></span></label></div>
+</div>
+<div class="nav"><button type="button" class="sec" id="back">Back</button><button type="button" class="pri" id="next">Next</button></div>
+</form>
+<div class="done" id="done" hidden>
+<div class="done-top"><div class="ok">✅</div><h2><span data-l="en">Application Submitted!</span><span data-l="es" lang="es">¡Solicitud enviada!</span><span data-l="zh" lang="zh-CN">申请已提交！</span></h2></div>
+<p class="done-next"><span data-l="en">Almost done — 2 more steps to complete:</span><span data-l="es" lang="es">Casi listo: faltan 2 pasos más:</span><span data-l="zh" lang="zh-CN">快完成了，还有 2 步需要完成：</span></p>
+<div class="done-steps">
+<div class="wa done-step"><span class="n" aria-hidden="true">1</span><div class="done-step-body">
+<h3><span data-l="en">Add SpeedX-FAY on WhatsApp</span><span data-l="es" lang="es">Agrega SpeedX-FAY en WhatsApp</span><span data-l="zh" lang="zh-CN">在 WhatsApp 上添加 SpeedX-FAY</span></h3>
+<p class="watext"><span data-l="en">Add this contact to receive dispatch notices, schedule updates, important alerts, and driver support.</span><span data-l="es" lang="es">Agrega este contacto para recibir avisos de despacho, actualizaciones de horarios, alertas importantes y soporte para conductores.</span><span data-l="zh" lang="zh-CN">添加该联系人，接收派单通知、排班更新、重要提醒和司机支持。</span></p>
+<div class="wa-row">
+<a class="wabtn" href="https://wa.me/message/7KPTJU42FVB7G1" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span data-l="en">Open WhatsApp</span><span data-l="es" lang="es">Abrir WhatsApp</span><span data-l="zh" lang="zh-CN">打开 WhatsApp</span></a>
+<figure class="waqrbox"><img class="waqr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAAClAQAAAAAVUAB3AAABTklEQVR42t2XMa6EMAxEh0+RkiNwE7gYEpG42HITjpAyBcI7dthuu6+h2BQRSTNy/Dw2sC+r4kduXwDSNZil3fLIA8b6h2/r/7ewnaLJyjLWmVsyO6VqBdTgZq8hj+mFRa52DScqsNojah4bJgrJ1Txve1lJzLCZOm/B5O6A+KZm8l4ZdvERW10oX3I7UsNxsKPOWjUr/UHJYHLxOtfmjWyg40syb/1ByV4bG1An1lvQWbuiVbPbQQJ+vmSWMlnW40blg6hYDTMpIZNEZVL3gOwl3ptd7iUOjZgSdKVl0Dex2hLNht+sbnW9RceeWmtbj8rK0/rkOZpHlDxv5CU/EFuT9Ayupu4BNGTjgRn05qrubzGXhJfsWiZb724N3OnUunKbghBCCyBmMtQ8rDAt4JHYYp50Xh6YucJQvOhMTEkw+RmTQS/ZTD9z/eAf1Rszp/Xtup34ZAAAAABJRU5ErkJggg==" width="80" height="80" alt="WhatsApp QR"><figcaption class="wacap"><span data-l="en">Or scan QR</span><span data-l="es" lang="es">O escanea el QR</span><span data-l="zh" lang="zh-CN">或扫码</span></figcaption></figure>
+</div>
+</div></div>
+<div class="sxapp done-step"><span class="n" aria-hidden="true">2</span><div class="done-step-body">
+<h3><span data-l="en">Download the SpeedX App and register with code GNXQ</span><span data-l="es" lang="es">Descarga la app de SpeedX y regístrate con el código GNXQ</span><span data-l="zh" lang="zh-CN">下载 SpeedX App 并用注册码 GNXQ 注册</span></h3>
+<p class="sxtext"><span data-l="en">Download RouteRunner by SpeedX and sign up with this registration code:</span><span data-l="es" lang="es">Descarga RouteRunner by SpeedX y regístrate con este código:</span><span data-l="zh" lang="zh-CN">下载 RouteRunner by SpeedX，注册时填写以下注册码：</span></p>
+<div class="sxcodewrap"><span class="sxcode" id="sxCode">GNXQ</span><button type="button" class="sxcopy" id="sxCopy" aria-live="polite"><span class="sxcopy-idle"><span data-l="en">Copy</span><span data-l="es" lang="es">Copiar</span><span data-l="zh" lang="zh-CN">复制</span></span><span class="sxcopy-done" hidden><span data-l="en">Copied</span><span data-l="es" lang="es">Copiado</span><span data-l="zh" lang="zh-CN">已复制</span></span></button></div>
+<div class="store-row" id="storeRow">
+<a class="sxstore" href="https://apps.apple.com/us/app/routerunner-by-speedx/id6474380723" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="22" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span data-l="en">App Store</span><span data-l="es" lang="es">App Store</span><span data-l="zh" lang="zh-CN">App Store</span></a>
+<a class="gpstore" href="https://play.google.com/store/apps/details?id=com.speedx.drivers&amp;pcampaignid=web_share" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M1.5 1.7c-.3.3-.5.8-.5 1.3v18c0 .5.2 1 .5 1.3l.1.1L13 12.2v-.4L1.6 1.6z"/><path fill="#FBBC04" d="m16.4 15.1-3.4 3.4L1.5 22.3 13 12.2z"/><path fill="#4285F4" d="M22.5 10.7c.8.4.8 1.2 0 1.7l-3.5 2-3-3.1 3-3.1z"/><path fill="#34A853" d="M13 8.5 1.5 1.7 13 12.2l3.4-3.3z"/></svg><span data-l="en">Google Play</span><span data-l="es" lang="es">Google Play</span><span data-l="zh" lang="zh-CN">Google Play</span></a>
+</div>
+</div></div>
+</div>
+<div class="done-foot"><p><span data-l="en">Thank you. Our team at Desert Express Logistics will contact you soon.</span><span data-l="es" lang="es">Gracias. Nuestro equipo de Desert Express Logistics se comunicará con usted pronto.</span><span data-l="zh" lang="zh-CN">谢谢！Desert Express Logistics 团队会尽快与您联系。</span></p><p class="note"><span data-l="en">Once approved, you&#x27;ll receive an email invite from QuickBooks to complete your W-9 and set up direct deposit.</span><span data-l="es" lang="es">Una vez aprobado, recibirá una invitación por correo electrónico de QuickBooks para completar su formulario W-9 y configurar el depósito directo.</span><span data-l="zh" lang="zh-CN">审核通过后，您会收到 QuickBooks 发出的邮件邀请，用于填写 W-9 表格并设置直接存款。</span></p></div>
+</div>
+</div>
+<script>
+const f=document.getElementById('f'),steps=[...f.querySelectorAll('.step')];let i=0;
+let LANG='en';
+const I18N={
+ en:{personal:'Personal Information',license:'Driver License',vehicle:'Vehicle & Insurance',emergency:'Emergency Contact',consent:'Consent & Signature',policy:'Operations Policy',
+  step:(a,n)=>`Step ${a} of ${n}`,next:'Next',back:'Back',submit:'Submit',submitting:'Submitting…',month:'Month',day:'Day',year:'Year',
+  months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  selectOne:'Select at least one',sigMatch:'Signature must match your full legal name.',
+  polName:'Driver Full Name must match the full legal name you entered in Step 1.',polChecks:'Please check all 6 acknowledgment boxes to continue.',
+  failed:'Submission failed: ',badImg:'Could not read image',today:'(today)',datePrefix:'Date: ',fmtDate:(d,M)=>M[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear()},
+ es:{personal:'Información personal',license:'Licencia de conducir',vehicle:'Vehículo y seguro',emergency:'Contacto de emergencia',consent:'Consentimiento y firma',policy:'Política de operaciones',
+  step:(a,n)=>`Paso ${a} de ${n}`,next:'Siguiente',back:'Atrás',submit:'Enviar',submitting:'Enviando…',month:'Mes',day:'Día',year:'Año',
+  months:['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+  selectOne:'Seleccione una opción',sigMatch:'La firma debe coincidir con su nombre legal completo.',
+  polName:'El nombre completo del conductor debe coincidir con el nombre legal completo que ingresó en el Paso 1.',polChecks:'Marque las 6 casillas de reconocimiento para continuar.',
+  failed:'No se pudo enviar: ',badImg:'No se pudo leer la imagen',today:'(hoy)',datePrefix:'Fecha: ',fmtDate:(d,M)=>d.getDate()+' de '+M[d.getMonth()]+' de '+d.getFullYear()},
+ zh:{personal:'个人信息',license:'驾照',vehicle:'车辆与保险',emergency:'紧急联系人',consent:'同意与签名',policy:'运营政策',
+  step:(a,n)=>`第 ${a} 步，共 ${n} 步`,next:'下一步',back:'上一步',submit:'提交',submitting:'正在提交…',month:'月',day:'日',year:'年',
+  months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+  selectOne:'请至少选择一项',sigMatch:'签名必须与您填写的法定全名一致。',
+  polName:'司机全名必须与您在第 1 步填写的法定全名一致。',polChecks:'请勾选全部 6 个确认框后再继续。',
+  failed:'提交失败：',badImg:'无法读取图片',today:'(今天)',datePrefix:'日期：',fmtDate:(d,M)=>d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'}
+};
+const T=k=>I18N[LANG][k];
+const photos={dlFront:null,dlBack:null};
+
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function daysInMonth(y,m){return new Date(y,m,0).getDate();}
+function buildDateRows(){
+  const now=new Date();
+  document.querySelectorAll('.drow[data-date]').forEach(row=>{
+    const key=row.dataset.date;
+    const future=row.hasAttribute('data-future');
+    const hid=document.getElementById(key);
+    const sm=document.createElement('select'); sm.setAttribute('aria-label','Month'); sm.className='dm';
+    const sd=document.createElement('select'); sd.setAttribute('aria-label','Day'); sd.className='dd';
+    const sy=document.createElement('select'); sy.setAttribute('aria-label','Year'); sy.className='dy';
+    sm.innerHTML='<option value="">Month</option>'+MONTHS.map((n,i)=>`<option value="${String(i+1).padStart(2,'0')}">${n}</option>`).join('');
+    const y0=future?now.getFullYear():now.getFullYear()-16;
+    const y1=future?now.getFullYear()+20:now.getFullYear()-16;
+    const yStart=future?now.getFullYear():1900;
+    const yEnd=future?now.getFullYear()+25:now.getFullYear()-16;
+    let years=[];
+    for(let y=yEnd;y>=yStart;y--) years.push(y);
+    sy.innerHTML='<option value="">'+T('year')+'</option>'+years.map(y=>`<option value="${y}">${y}</option>`).join('');
+    function refillDays(){
+      const m=+sm.value||1,y=+sy.value||2000,max=daysInMonth(y,m),cur=sd.value;
+      sd.innerHTML='<option value="">'+T('day')+'</option>'+Array.from({length:max},(_,i)=>`<option value="${String(i+1).padStart(2,'0')}">${i+1}</option>`).join('');
+      if(cur && +cur<=max) sd.value=cur;
+    }
+    function sync(){
+      refillDays();
+      if(sm.value&&sd.value&&sy.value){hid.value=`${sy.value}-${sm.value}-${sd.value}`;} else {hid.value='';}
+      hid.classList.toggle('err',false);
+    }
+    sm.onchange=sd.onchange=sy.onchange=sync;
+    refillDays();
+    row.append(sm,sd,sy);
+      });
+}
+buildDateRows();
+
+(function(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+const iso=`${y}-${m}-${day}`; const el=document.getElementById('signDate'); if(el) el.value=iso;
+})();
+function renderDates(){const d=new Date(),M=T('months'),txt=T('fmtDate')(d,M);
+const hint=document.getElementById('signDateHint'); if(hint) hint.textContent=T('datePrefix')+txt+' '+T('today');
+const pd=document.getElementById('policyDate'); if(pd) pd.value=txt;
+document.querySelectorAll('.drow[data-date]').forEach(row=>{
+  const sm=row.querySelector('.dm'),sd=row.querySelector('.dd'),sy=row.querySelector('.dy');
+  if(sm){sm.options[0].text=T('month');M.forEach((n,k)=>{sm.options[k+1].text=n.charAt(0).toUpperCase()+n.slice(1);});sm.setAttribute('aria-label',T('month'));}
+  if(sd){sd.options[0].text=T('day');sd.setAttribute('aria-label',T('day'));}
+  if(sy){sy.options[0].text=T('year');sy.setAttribute('aria-label',T('year'));}
+});}
+function setLang(l){LANG=(l==='es'||l==='zh')?l:'en';document.body.classList.toggle('es',LANG==='es');document.body.classList.toggle('zh',LANG==='zh');document.documentElement.lang=LANG==='zh'?'zh-CN':LANG;
+document.getElementById('langField').value=LANG.toUpperCase();
+document.querySelectorAll('[data-setlang]').forEach(bt=>{const on=bt.dataset.setlang===LANG;bt.classList.toggle('on',on);bt.setAttribute('aria-pressed',on);});
+document.querySelectorAll('img[data-alt-es]').forEach(im=>{if(!im.dataset.altEn)im.dataset.altEn=im.alt;im.alt=LANG==='es'?im.dataset.altEs:(LANG==='zh'&&im.dataset.altZh)?im.dataset.altZh:im.dataset.altEn;});
+document.querySelectorAll('[data-group]').forEach(g=>{const m=g.nextElementSibling;if(m&&m.classList.contains('msg')&&m.textContent)m.textContent=T('selectOne');});
+renderDates();if(typeof show==='function')show();}
+document.querySelectorAll('[data-setlang]').forEach(bt=>bt.addEventListener('click',()=>setLang(bt.dataset.setlang)));
+
+(function(){
+  const btn=document.getElementById('sxCopy');
+  const codeEl=document.getElementById('sxCode');
+  if(!btn||!codeEl)return;
+  const CODE='GNXQ';
+  let timer=0;
+  function markCopied(){
+    const idle=btn.querySelector('.sxcopy-idle');
+    const doneLbl=btn.querySelector('.sxcopy-done');
+    btn.classList.add('copied');
+    if(idle)idle.hidden=true;
+    if(doneLbl)doneLbl.hidden=false;
+    if(timer)clearTimeout(timer);
+    timer=setTimeout(()=>{
+      btn.classList.remove('copied');
+      if(idle)idle.hidden=false;
+      if(doneLbl)doneLbl.hidden=true;
+    },2000);
+  }
+  function selectCode(){
+    const sel=window.getSelection&&window.getSelection();
+    if(!sel||!document.createRange)return;
+    const range=document.createRange();
+    range.selectNodeContents(codeEl);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  btn.addEventListener('click',()=>{
+    try{
+      if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+        const p=navigator.clipboard.writeText(CODE);
+        if(p&&typeof p.then==='function'){
+          p.then(markCopied).catch(()=>{try{selectCode();}catch(e){} markCopied();});
+          return;
+        }
+      }
+    }catch(e){}
+    try{selectCode();}catch(e){}
+    markCopied();
+  });
+})();
+
+(function(){
+  const row=document.getElementById('storeRow');
+  if(!row)return;
+  const as=row.querySelector('.sxstore');
+  const gp=row.querySelector('.gpstore');
+  if(!as||!gp)return;
+  const ua=navigator.userAgent||'';
+  if(/Android/i.test(ua)){row.insertBefore(gp,as);gp.classList.add('store-preferred');}
+  else if(/iPhone|iPad|iPod/i.test(ua)){as.classList.add('store-preferred');}
+})();
+
+// Static hosting: POST to the Apps Script web app (doPost). text/plain = CORS "simple request", no preflight.
+const SUBMIT_URL='https://script.google.com/macros/s/AKfycbzhXxZfdIIXNsw0vUlhrbPZzgcJIrzJzyaEfdRILAsm0aPRYg0RWivwnDARbdt8qeyX/exec';
+async function submitRemote(data){
+  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),90000);
+  let res;
+  try{res=await fetch(SUBMIT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data),redirect:'follow',signal:ctl.signal});}
+  catch(e){throw new Error(e&&e.name==='AbortError'?'timeout':'network error');}
+  finally{clearTimeout(tm);}
+  let j=null;try{j=await res.json();}catch(e){}
+  if(!j)throw new Error('HTTP '+res.status);
+  if(!j.ok)throw new Error(String(j.error||'unknown error').replace(/^Error:\s*/,''));
+  return j;
+}
+function compressFile(file,maxW,quality){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error(T('badImg')));};
+    img.src=url;
+  });
+}
+
+async function bindUpload(inputId,prevId,boxId,key){
+  const input=document.getElementById(inputId),prev=document.getElementById(prevId),box=document.getElementById(boxId);
+  input.addEventListener('change',async()=>{
+    const file=input.files&&input.files[0];
+    if(!file){photos[key]=null;prev.style.display='none';return;}
+    try{
+      const dataUrl=await compressFile(file,1600,0.72);
+      photos[key]=dataUrl;
+      prev.src=dataUrl;prev.style.display='block';
+      box.classList.remove('err');
+    }catch(e){alert(e.message||e);photos[key]=null;prev.style.display='none';}
+  });
+}
+bindUpload('dlFront','prevFront','upFront','dlFront');
+bindUpload('dlBack','prevBack','upBack','dlBack');
+
+function show(){steps.forEach((s,k)=>s.classList.toggle('on',k===i));document.getElementById('bar').style.width=((i+1)/steps.length*100)+'%';
+document.getElementById('stepl').textContent=T('step')(i+1,steps.length)+' · '+T(steps[i].dataset.t);back.textContent=T('back');back.style.visibility=i?'visible':'hidden';if(!next.disabled)next.textContent=i===steps.length-1?T('submit'):T('next');}
+function valid(s){let ok=true,today=new Date().toISOString().slice(0,10);
+s.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=file]),select').forEach(el=>{let bad=!el.checkValidity();if(el.dataset.future!==undefined&&el.value&&el.value<=today)bad=true;el.classList.toggle('err',bad);if(bad)ok=false;});
+s.querySelectorAll('[data-group]').forEach(g=>{const m=g.nextElementSibling,c=g.querySelector(':checked');if(m&&m.classList.contains('msg'))m.textContent=c?'':T('selectOne');if(!c)ok=false;});
+
+s.querySelectorAll('.drow[data-date]').forEach(row=>{const hid=document.getElementById(row.dataset.date);let bad=!hid.value;if(!bad&&hid.dataset.future!==undefined&&hid.value<=today)bad=true;row.querySelectorAll('select').forEach(el=>el.classList.toggle('err',bad));if(bad)ok=false;});
+s.querySelectorAll('.cons input').forEach(el=>{el.parentElement.style.color=el.checked?'':'#dc2626';if(!el.checked)ok=false;});
+if(s.contains(document.getElementById('upFront'))){
+  const frontOk=!!photos.dlFront,backOk=!!photos.dlBack;
+  document.getElementById('upFront').classList.toggle('err',!frontOk);
+  document.getElementById('upBack').classList.toggle('err',!backOk);
+  if(!frontOk||!backOk)ok=false;
+}
+const nm=v=>v.trim().replace(/\s+/g,' ').toLowerCase();
+if(s.contains(f.elements['signature'])&&nm(f.elements['signature'].value)!==nm(f.elements['fullName'].value)){f.elements['signature'].classList.add('err');alert(T('sigMatch'));ok=false;}
+if(ok&&s.contains(f.elements['policyName'])&&nm(f.elements['policyName'].value)!==nm(f.elements['fullName'].value)){f.elements['policyName'].classList.add('err');alert(T('polName'));ok=false;}
+if(!ok&&s.querySelector('.polchk:not(:checked)')&&!s.querySelector('input.err')){alert(T('polChecks'));}
+if(!ok){const e=s.querySelector('.err')||s.querySelector('.polchk:not(:checked)');e&&e.focus&&e.focus();e&&e.scrollIntoView&&e.scrollIntoView({block:'center'});}return ok;}
+back.onclick=()=>{if(i>0){i--;show();}};
+next.onclick=async()=>{if(!valid(steps[i]))return;if(i<steps.length-1){i++;show();window.scrollTo(0,0);return;}
+const fd=new FormData(f),data={};for(const[k,v]of fd){if(k==='dlFront'||k==='dlBack')continue;data[k]=data[k]?data[k]+', '+v:v;}
+data.dlFront=photos.dlFront;data.dlBack=photos.dlBack;
+const pc=[...f.querySelectorAll('.polchk')];data.policyAgreement=(pc.length===6&&pc.every(c=>c.checked)&&f.elements['policyName'].value.trim())?'Agreed':'';data.lang=LANG.toUpperCase();
+next.disabled=true;next.textContent=T('submitting');
+function ok(){f.hidden=true;document.querySelector('.prog').hidden=true;stepl.hidden=true;done.hidden=false;window.scrollTo(0,0);}
+function fail(e){alert(T('failed')+(e&&e.message?e.message:e));next.disabled=false;next.textContent=T('submit');}
+if(window.google&&google.script&&google.script.run){google.script.run.withSuccessHandler(ok).withFailureHandler(fail).submitApplication(data);}
+else{submitRemote(data).then(ok,fail);}};
+setLang('en');
+show();
+</script></body></html>
