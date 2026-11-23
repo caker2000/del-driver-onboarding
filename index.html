@@ -59,8 +59,8 @@ button{padding:12px 22px;border:0;border-radius:8px;font-size:1rem;cursor:pointe
 @media (max-height:720px){.done-step .sxtext{display:none}}
 .note{background:#fff4e6;border-left:4px solid var(--p);padding:10px 12px;border-radius:6px;font-size:.9rem}
 .up{border:2px dashed var(--b);border-radius:12px;padding:14px;text-align:center;background:#fafafa}
-.up.err{border-color:#dc2626}.up input{display:none}
-.up .pick{display:inline-block;margin-top:8px;padding:10px 16px;background:var(--p);color:#fff;border-radius:8px;font-weight:600;cursor:pointer}
+.up.err{border-color:#dc2626}.up input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.up .pick{position:relative;display:inline-block;margin-top:8px;padding:10px 16px;background:var(--p);color:#fff;border-radius:8px;font-weight:600;cursor:pointer}
 .up img{max-width:100%;max-height:180px;margin-top:10px;border-radius:8px;display:none}
 .up .hint{font-size:.8rem;color:#6b7280;margin:0}
 .radios{display:flex;gap:10px;flex-wrap:wrap}.radios label{font-weight:400;border:1px solid var(--b);padding:10px 14px;border-radius:10px;display:flex;gap:8px;align-items:center;cursor:pointer}
@@ -114,11 +114,11 @@ body:not(.es) [data-l="es"]{display:none}body:not(.zh) [data-l="zh"]{display:non
 <div><label><span data-l="en">Expiration Date *</span><span data-l="es" lang="es">Fecha de vencimiento *</span><span data-l="zh" lang="zh-CN">到期日期 *</span></label><div class="drow" data-date="dlExp" data-required data-future></div><input type="hidden" name="dlExp" id="dlExp" required data-future></div>
 <div class="full"><label><span data-l="en">License Front Photo *</span><span data-l="es" lang="es">Foto del frente de la licencia *</span><span data-l="zh" lang="zh-CN">驾照正面照片 *</span></label>
 <div class="up" id="upFront"><p class="hint"><span data-l="en">Take a clear photo of the front, or choose from your gallery.</span><span data-l="es" lang="es">Tome una foto clara del frente o elíjala de su galería.</span><span data-l="zh" lang="zh-CN">请拍一张清晰的驾照正面照片，或从相册中选择。</span></p>
-<label class="pick"><input type="file" id="dlFront" accept="image/*" capture="environment"><span data-l="en">Upload front</span><span data-l="es" lang="es">Subir frente</span><span data-l="zh" lang="zh-CN">上传正面</span></label>
+<label class="pick"><input type="file" id="dlFront" accept="image/*"><span data-l="en">Upload front</span><span data-l="es" lang="es">Subir frente</span><span data-l="zh" lang="zh-CN">上传正面</span></label>
 <img id="prevFront" alt="Front preview" data-alt-es="Vista previa del frente" data-alt-zh="正面预览"></div></div>
 <div class="full"><label><span data-l="en">License Back Photo *</span><span data-l="es" lang="es">Foto del reverso de la licencia *</span><span data-l="zh" lang="zh-CN">驾照背面照片 *</span></label>
 <div class="up" id="upBack"><p class="hint"><span data-l="en">Take a clear photo of the back, or choose from your gallery.</span><span data-l="es" lang="es">Tome una foto clara del reverso o elíjala de su galería.</span><span data-l="zh" lang="zh-CN">请拍一张清晰的驾照背面照片，或从相册中选择。</span></p>
-<label class="pick"><input type="file" id="dlBack" accept="image/*" capture="environment"><span data-l="en">Upload back</span><span data-l="es" lang="es">Subir reverso</span><span data-l="zh" lang="zh-CN">上传背面</span></label>
+<label class="pick"><input type="file" id="dlBack" accept="image/*"><span data-l="en">Upload back</span><span data-l="es" lang="es">Subir reverso</span><span data-l="zh" lang="zh-CN">上传背面</span></label>
 <img id="prevBack" alt="Back preview" data-alt-es="Vista previa del reverso" data-alt-zh="背面预览"></div></div>
 </div></div>
 <div class="step" data-t="vehicle"><h2><span data-l="en">Vehicle &amp; Insurance</span><span data-l="es" lang="es">Vehículo y seguro</span><span data-l="zh" lang="zh-CN">车辆与保险</span></h2><div class="g">
